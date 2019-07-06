@@ -1,0 +1,18 @@
+type Room @model {
+  id: ID!
+  name: String!
+  items: [Item] @connection(name: "RoomItems")
+}
+
+type Item @model {
+  id: ID!
+  content: String!
+  room: Room @connection(name: "RoomItems")
+  responses: [Response] @connection(name: "ItemResponses")
+}
+
+type Response @model {
+  id: ID!
+  content: String!
+  item: Item @connection(name: "ItemResponses")
+}
