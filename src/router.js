@@ -15,6 +15,11 @@ export const routes = [
     component: () => import(/* webpackChunkName: "room" */ '@/views/Room')
   },
   {
+    path: '/items',
+    name: 'Items',
+    component: () => import(/* webpackChunkName: "items" */ '@/views/Items')
+  },
+  {
     path: '*',
     redirect: '/main'
   }
