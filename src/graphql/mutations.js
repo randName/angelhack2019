@@ -1,10 +1,12 @@
-// eslint-disable
+/* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
 export const createRoom = `mutation CreateRoom($input: CreateRoomInput!) {
   createRoom(input: $input) {
     id
     name
+    status
+    results
     items {
       items {
         id
@@ -14,11 +16,13 @@ export const createRoom = `mutation CreateRoom($input: CreateRoomInput!) {
     }
   }
 }
-`
+`;
 export const updateRoom = `mutation UpdateRoom($input: UpdateRoomInput!) {
   updateRoom(input: $input) {
     id
     name
+    status
+    results
     items {
       items {
         id
@@ -28,11 +32,13 @@ export const updateRoom = `mutation UpdateRoom($input: UpdateRoomInput!) {
     }
   }
 }
-`
+`;
 export const deleteRoom = `mutation DeleteRoom($input: DeleteRoomInput!) {
   deleteRoom(input: $input) {
     id
     name
+    status
+    results
     items {
       items {
         id
@@ -42,7 +48,7 @@ export const deleteRoom = `mutation DeleteRoom($input: DeleteRoomInput!) {
     }
   }
 }
-`
+`;
 export const createItem = `mutation CreateItem($input: CreateItemInput!) {
   createItem(input: $input) {
     id
@@ -50,6 +56,8 @@ export const createItem = `mutation CreateItem($input: CreateItemInput!) {
     room {
       id
       name
+      status
+      results
       items {
         nextToken
       }
@@ -57,13 +65,14 @@ export const createItem = `mutation CreateItem($input: CreateItemInput!) {
     responses {
       items {
         id
+        rating
         content
       }
       nextToken
     }
   }
 }
-`
+`;
 export const updateItem = `mutation UpdateItem($input: UpdateItemInput!) {
   updateItem(input: $input) {
     id
@@ -71,6 +80,8 @@ export const updateItem = `mutation UpdateItem($input: UpdateItemInput!) {
     room {
       id
       name
+      status
+      results
       items {
         nextToken
       }
@@ -78,13 +89,14 @@ export const updateItem = `mutation UpdateItem($input: UpdateItemInput!) {
     responses {
       items {
         id
+        rating
         content
       }
       nextToken
     }
   }
 }
-`
+`;
 export const deleteItem = `mutation DeleteItem($input: DeleteItemInput!) {
   deleteItem(input: $input) {
     id
@@ -92,6 +104,8 @@ export const deleteItem = `mutation DeleteItem($input: DeleteItemInput!) {
     room {
       id
       name
+      status
+      results
       items {
         nextToken
       }
@@ -99,16 +113,18 @@ export const deleteItem = `mutation DeleteItem($input: DeleteItemInput!) {
     responses {
       items {
         id
+        rating
         content
       }
       nextToken
     }
   }
 }
-`
+`;
 export const createResponse = `mutation CreateResponse($input: CreateResponseInput!) {
   createResponse(input: $input) {
     id
+    rating
     content
     item {
       id
@@ -116,6 +132,8 @@ export const createResponse = `mutation CreateResponse($input: CreateResponseInp
       room {
         id
         name
+        status
+        results
       }
       responses {
         nextToken
@@ -123,10 +141,11 @@ export const createResponse = `mutation CreateResponse($input: CreateResponseInp
     }
   }
 }
-`
+`;
 export const updateResponse = `mutation UpdateResponse($input: UpdateResponseInput!) {
   updateResponse(input: $input) {
     id
+    rating
     content
     item {
       id
@@ -134,6 +153,8 @@ export const updateResponse = `mutation UpdateResponse($input: UpdateResponseInp
       room {
         id
         name
+        status
+        results
       }
       responses {
         nextToken
@@ -141,10 +162,11 @@ export const updateResponse = `mutation UpdateResponse($input: UpdateResponseInp
     }
   }
 }
-`
+`;
 export const deleteResponse = `mutation DeleteResponse($input: DeleteResponseInput!) {
   deleteResponse(input: $input) {
     id
+    rating
     content
     item {
       id
@@ -152,6 +174,8 @@ export const deleteResponse = `mutation DeleteResponse($input: DeleteResponseInp
       room {
         id
         name
+        status
+        results
       }
       responses {
         nextToken
@@ -159,4 +183,4 @@ export const deleteResponse = `mutation DeleteResponse($input: DeleteResponseInp
     }
   }
 }
-`
+`;

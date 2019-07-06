@@ -1,10 +1,12 @@
-// eslint-disable
+/* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
 export const getRoom = `query GetRoom($id: ID!) {
   getRoom(id: $id) {
     id
     name
+    status
+    results
     items {
       items {
         id
@@ -14,7 +16,7 @@ export const getRoom = `query GetRoom($id: ID!) {
     }
   }
 }
-`
+`;
 export const listRooms = `query ListRooms(
   $filter: ModelRoomFilterInput
   $limit: Int
@@ -24,6 +26,8 @@ export const listRooms = `query ListRooms(
     items {
       id
       name
+      status
+      results
       items {
         nextToken
       }
@@ -31,7 +35,7 @@ export const listRooms = `query ListRooms(
     nextToken
   }
 }
-`
+`;
 export const getItem = `query GetItem($id: ID!) {
   getItem(id: $id) {
     id
@@ -39,6 +43,8 @@ export const getItem = `query GetItem($id: ID!) {
     room {
       id
       name
+      status
+      results
       items {
         nextToken
       }
@@ -46,13 +52,14 @@ export const getItem = `query GetItem($id: ID!) {
     responses {
       items {
         id
+        rating
         content
       }
       nextToken
     }
   }
 }
-`
+`;
 export const listItems = `query ListItems(
   $filter: ModelItemFilterInput
   $limit: Int
@@ -65,6 +72,8 @@ export const listItems = `query ListItems(
       room {
         id
         name
+        status
+        results
       }
       responses {
         nextToken
@@ -73,10 +82,11 @@ export const listItems = `query ListItems(
     nextToken
   }
 }
-`
+`;
 export const getResponse = `query GetResponse($id: ID!) {
   getResponse(id: $id) {
     id
+    rating
     content
     item {
       id
@@ -84,6 +94,8 @@ export const getResponse = `query GetResponse($id: ID!) {
       room {
         id
         name
+        status
+        results
       }
       responses {
         nextToken
@@ -91,7 +103,7 @@ export const getResponse = `query GetResponse($id: ID!) {
     }
   }
 }
-`
+`;
 export const listResponses = `query ListResponses(
   $filter: ModelResponseFilterInput
   $limit: Int
@@ -100,6 +112,7 @@ export const listResponses = `query ListResponses(
   listResponses(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
+      rating
       content
       item {
         id
@@ -109,4 +122,4 @@ export const listResponses = `query ListResponses(
     nextToken
   }
 }
-`
+`;

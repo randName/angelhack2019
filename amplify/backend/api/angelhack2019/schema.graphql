@@ -1,6 +1,8 @@
 type Room @model {
   id: ID!
   name: String!
+  status: String
+  results: String
   items: [Item] @connection(name: "RoomItems")
 }
 
@@ -13,6 +15,7 @@ type Item @model {
 
 type Response @model {
   id: ID!
-  content: String!
+  rating: Int
+  content: String
   item: Item @connection(name: "ItemResponses")
 }
