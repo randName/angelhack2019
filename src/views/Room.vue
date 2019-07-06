@@ -24,16 +24,7 @@
     </v-layout>
     <v-layout row wrap>
       <v-flex v-for="item in room.items.items" :key="item.id" xs12 sm6>
-        <v-card>
-          <v-card-text>
-            {{ item }}
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <RatingBar></RatingBar>
-            <v-spacer></v-spacer>
-          </v-card-actions>
-        </v-card>
+        <ItemCard :value="item"></ItemCard>
       </v-flex>
     </v-layout>
   </v-container>
@@ -44,6 +35,7 @@
 <script>
 import { getRoom } from '@/graphql/queries'
 
+import ItemCard from '@/components/ItemCard'
 import RatingBar from '@/components/RatingBar'
 
 const responses = [
@@ -57,6 +49,7 @@ responses[undefined] = 'Click on the sample responses to see what they mean'
 
 export default {
   components: {
+    ItemCard,
     RatingBar,
   },
   data: () => ({
