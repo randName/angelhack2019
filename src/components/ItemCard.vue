@@ -13,7 +13,7 @@
         Room: {{ value.room ? value.room.name : 'None' }}
       </v-btn>
       <div v-else>
-        <RatingBar v-model="rating"></RatingBar>
+        <RatingBar v-model="rating" @input="updateResponse"></RatingBar>
         <v-spacer></v-spacer>
       </div>
     </v-card-actions>
@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import { createResponse, updateResponse } from '@/graphql/mutations'
+
 import RatingBar from '@/components/RatingBar'
 
 export default {
@@ -32,12 +34,33 @@ export default {
     admin: Boolean,
   },
   data: () => ({
-    rating: null,
+    rid: null,
+    rating: undefined,
   }),
   computed: {
     item () {
       return JSON.parse(this.value.content)
     },
   },
+  created () {
+    const { API, graphqlOperation } = this.$Amplify
+    const responseItemId = this.value.id
+    const id = this.$store.state.responses[responseItemId]
+    if (id === undefined) {
+      API.graphql(graphqlOperation(createResponse, { input: { responseItemId, rating: -1 } })).then(({ data }) => {
+        this.$store.commit('respond', { id: data.createResponse.id, responseItemId })
+      })
+    } else {
+      this.rid = id
+    }
+  },
+  methods: {
+    async updateResponse () {
+      const { API, graphqlOperation } = this.$Amplify
+      const rating = this.rating === undefined ? -1 : this.rating
+      const input = { rating, id: this.rid }
+      await API.graphql(graphqlOperation(updateResponse, { input }))
+    },
+  }
 }
 </script>
