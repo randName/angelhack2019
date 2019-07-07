@@ -1,6 +1,4 @@
 <template>
-<amplify-connect :query="getRoom">
-<template #default="{ loading, data: { getRoom: room }, errors }">
   <v-container v-if="room" grid-list-md align-center justify-center>
     <v-layout row>
       <v-flex xs12>
@@ -23,18 +21,20 @@
       </v-flex>
     </v-layout>
     <v-layout row wrap>
-      <v-flex v-for="item in room.items.items" :key="item.id" xs12 sm6>
+      <v-flex v-for="item in items" :key="item.id" xs12 sm6>
         <ItemCard :value="item"></ItemCard>
+      </v-flex>
+    </v-layout>
+    <amplify-connect :subscription="responseSub" :onSubscriptionMsg="subMsg"></amplify-connect>
+    <v-layout row wrap>
+      <v-flex v-if="ready && vote !== -1" xs12>
+        <ItemCard :value="items[vote]" result></ItemCard>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
-</amplify-connect>
-</template>
 
 <script>
-import { getRoom } from '@/graphql/queries'
-
 import ItemCard from '@/components/ItemCard'
 import RatingBar from '@/components/RatingBar'
 
@@ -47,6 +47,38 @@ const responses = [
 
 responses[undefined] = 'Click on the sample responses to see what they mean'
 
+const onResponse = `subscription OnResponse {
+  onCreateResponse {
+    id
+    rating
+  },
+  onUpdateResponse {
+    id
+    rating
+  }
+}
+`
+
+const getRoom = `query GetRoom($id: ID!) {
+  getRoom(id: $id) {
+    id
+    name
+    items {
+      items {
+        id
+        content
+        responses {
+          items {
+            id
+            rating
+          }
+        }
+      }
+    }
+  }
+}
+`
+
 export default {
   components: {
     ItemCard,
@@ -54,15 +86,53 @@ export default {
   },
   data: () => ({
     responses,
+    room: null,
     sample: undefined,
   }),
   computed: {
     rid () {
       return this.$route.params.id
     },
-    getRoom () {
-      return this.$Amplify.graphqlOperation(getRoom, { id: this.rid })
+    items () {
+      if (!this.room) {
+        return []
+      }
+      return this.room.items.items
+    },
+    ready () {
+      if (!this.room) return false
+      return this.items.map((i) => i.responses.items.map((j) => j.rating)).flat().every((i) => i > -1)
+    },
+    vote () {
+      if (!this.ready) return -1
+      const votes = this.items.map((i) => i.responses.items.reduce((a, { rating }) => {
+        if (a === -1 || rating === 0) { return -1 }
+        return rating + a
+      }, 0))
+      return votes.indexOf(Math.max(...votes))
+    },
+    responseSub () {
+      return this.$Amplify.graphqlOperation(onResponse)
     },
   },
+  mounted () {
+    this.getRoom()
+  },
+  methods: {
+    async getRoom () {
+      const { API, graphqlOperation } = this.$Amplify
+      const { data } = await API.graphql(graphqlOperation(getRoom, { id: this.rid }))
+      this.room = data.getRoom
+    },
+    subMsg (prev, { onCreateResponse, onUpdateResponse }) {
+      const resp = onCreateResponse || onUpdateResponse
+      this.items.forEach((i) => {
+        const idx = i.responses.items.map((j) => j.id).indexOf(resp.id)
+        if (idx !== -1) {
+          i.responses.items.splice(idx, 1, resp)
+        }
+      })
+    },
+  }
 }
 </script>

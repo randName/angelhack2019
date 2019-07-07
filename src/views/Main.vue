@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import { listRooms } from '@/graphql/queries'
-import { createRoom } from '@/graphql/mutations'
+import { listRooms, listItems } from '@/graphql/queries'
+import { createRoom, updateItem } from '@/graphql/mutations'
 
 export default {
   data: () => ({
@@ -60,9 +60,8 @@ export default {
   methods: {
     async joinRoom () {
       const { API, graphqlOperation } = this.$Amplify
-      const limit = 1
       const filter = { name: { eq: this.roomCode.toLowerCase() } }
-      const results = await API.graphql(graphqlOperation(listRooms, { filter, limit }))
+      const results = await API.graphql(graphqlOperation(listRooms, { filter }))
       const items = results.data.listRooms.items
       if (items.length < 1) {
         this.errors = ['No such room']
@@ -77,7 +76,14 @@ export default {
         }
       }
     },
-    created ({ data }) {
+    async created ({ data }) {
+      const { API, graphqlOperation } = this.$Amplify
+      const itemRoomId = data.createRoom.id
+      const items = await API.graphql(graphqlOperation(listItems))
+      await Promise.all(items.data.listItems.items.map((i) => {
+        const input = { id: i.id, itemRoomId }
+        return API.graphql(graphqlOperation(updateItem, { input }))
+      }))
       this.enterRoom(data.createRoom)
     },
     enterRoom ({ id }) {

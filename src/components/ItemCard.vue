@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="rating === undefined">
     <v-card-title>
       <div class="headline">{{ item.title }}</div>
     </v-card-title>
@@ -12,7 +12,7 @@
       <v-btn v-if="admin" @click="$emit('add')">
         Room: {{ value.room ? value.room.name : 'None' }}
       </v-btn>
-      <div v-else>
+      <div v-else-if="!result">
         <RatingBar v-model="rating" @input="updateResponse"></RatingBar>
         <v-spacer></v-spacer>
       </div>
@@ -32,6 +32,7 @@ export default {
   props: {
     value: Object,
     admin: Boolean,
+    result: Boolean,
   },
   data: () => ({
     rid: null,
@@ -43,6 +44,7 @@ export default {
     },
   },
   created () {
+    if (this.result) return
     const { API, graphqlOperation } = this.$Amplify
     const responseItemId = this.value.id
     const id = this.$store.state.responses[responseItemId]
@@ -56,6 +58,7 @@ export default {
   },
   methods: {
     async updateResponse () {
+      if (!this.rid) return
       const { API, graphqlOperation } = this.$Amplify
       const rating = this.rating === undefined ? -1 : this.rating
       const input = { rating, id: this.rid }
